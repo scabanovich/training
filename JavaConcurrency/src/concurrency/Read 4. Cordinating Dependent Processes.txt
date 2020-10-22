@@ -1,0 +1,62 @@
+======4. Coordinating Efforts Among Dependent Processes=====
+
+	orchestration: a proactive directory
+	choreography: reactive actors
+	
+===	CountDownLatch
+	- Similar to, but richer semantics than join
+	- Threads wait for a programmatically decrement count down before continuing
+	- Helpful when one thread is dependent on the completion or arrival of several 
+	  other threads before moving on
+
+		CountDownLatch orchestrator = new CountDownLatch(numberOf Actors);
+		
+See CountDownIdentityPipelene
+
+===Benefits of Promises, Continuation-Passing Pattern
+	
+	Caller	Callee	 Workers  Result
+	
+	- Caller invokes method, providing callback method
+	- caller does not need to block on thread completion
+	- callee can easily make the choice, even at rantime,
+	  to execute caller's request concurrency
+	  
+	Method references and Lambdas
+	- simple way to speciy a callback to a downstream execution
+	
+	Continuations return immediately, but that does not mean that the work is done
+	
+See ContinuationPassingIdentityPipeline
+
+===Pipeline Pattern  (CompletableFuture)
+	previous pattern is cumbersom
+	
+	Caller  Pipe  Workers
+	
+	- Flattens out otherwise deeply=nested callbacks inherent 
+	  in the Continuation-Passing pattern
+	- Abstracts away dependencies betweeb asynchronous tasks
+	- Affords the same benefits of ignoring, delegating, 
+	  or blocking on the results as Futures 
+	  
+	CompletableFuture
+	- Fluent API allows for chain of responsibility,
+	  similar to the Java StreamAPI
+	- Semantics similar to Future; fire-and-forget, block,
+	  or delegate the result
+
+See CompletableFutureIdentityPipeline
+
+===Asynchronous Composition
+	Pattern				using CompletableFuture
+	Fire-and-Forget			.runAsync
+	Foot-Race				.anyOf -> .thenRunAsync
+	Scatter-Gather			.allOf -> .thenRunAsync
+
+
+
+
+
+
+

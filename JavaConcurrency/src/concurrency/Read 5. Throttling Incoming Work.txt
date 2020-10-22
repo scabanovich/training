@@ -1,0 +1,51 @@
+=======Throttling Incoming Work============
+
+=====Backpressure Pattern
+	
+	- When request queue is full, reject request,
+	- Client is responsible for what to do with the request
+	- Queueing theory provides a mathematical model (see Little's Law)
+	
+	ThreadPoolExecutor, Part II 
+	
+	- Configurable for backpressure by supplying
+	  an ArrayBlockingQueue where the capacity is the in-flight max
+	- Defaults to throw a RejectedExecutionException if no handler provided	
+	  CallerRunsPolicy AbortPolicy DiscardPolicy DiscardOldestPolicy
+	- Max and core pool size can be throttled at runtime
+	
+See BackpressureAddressVerifier
+
+=====Semaphore Pattern
+	- Semaphore has a given number of permits that can be issued on its lock
+	- Each client blocks at a 'ticket booth', waiting for a permit
+	- Only a given numberof callers can invoke the method at a time
+	- Similar to ReentrantLock, just allowing more than one thread to obtain the lock at once
+	- Similar acquisition and release patterns to ReentrantLock,
+	  like trial locking and timed waits
+	- Number of available permits can be changed at runtime if Semaphore is subclassed
+
+See ConnectionLimitingAddressVerifier
+
+=====Batching Pattern
+	- Batch according to a specific size with a timeout
+	- Callers can ignore, block or provide callback
+	  to continue once their payload has been processed
+	- Lick Backpressure, model the traffic in order to get 
+	  optimal batch size and timeout
+
+	CyclicBarrier
+	- like CountDownLatch, but reusable
+	- new arrivals should block
+	- a runnable can be specified to run each time
+	  the barrier is brocken
+	- useful when repeated groups of multiple threads
+	  must wait for one another
+	 
+	Phaser
+	- arrivals may choose to block and wait or simple announce their arrival
+	- Separates the concepts of registration and arrival to allow for myriad 
+	  of sophisticated completion patterns
+	- Supports tiers of Phasers to reduce contention in cases of a large number of registrants
+	
+	

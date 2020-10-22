@@ -1,0 +1,52 @@
+======Scaling Java Applications Through Concurrency======
+
+=====Running Processes In Background=====
+
+1. Given an example pipeline: see IdentityPipelene
+
+2. Its a single thread implementation that blocks on each call.
+   It will be as slow as the slowest instruction.
+   
+3. We have to implement Fire-and-Forget pattern.
+
+	Options Found in Concurrency API
+		I. ThreadPoolExecutor
+   			maintains a pool of threads for rapid reuse
+   			abstracts away the use of thread (think of tasks, not of how they are executed)
+   			results may either be blocked on, ignored, or delegated
+   			never blocks on task submission, even if the thread pool size is max-out
+   				(it maintains a queue)
+   			Cached or Fixed
+  			Executors static factory
+
+4. See ThreadPoolExecutorMalformedIdentityRepository to implement Fire-and-Forget pattern
+  
+  		II. ForkJoinPool
+  			reasons:
+  				- asynchronous != non-blocking
+  				- Threads may need to block, waiting for other threads to finish
+  				- in the case of thread pools this is sub-optimal,
+  			  	  because blocking thread cannod be scheduled even if it does not do job (waits)
+  			identical benefits to ThreadPoolExecutor
+  			difference: processes are daemon threads
+  			processes may still work from one another, which is nice for threading recursion
+  				(e.g. divide and conquer algorithm)
+  			ways to create:
+  				Executors.newWorkStealingPool();
+  				ForkJoinPool.common();
+  			If parallelizeng            ...   then extend
+  			recursion with results            RecursiveTask		extends ForkJoinTask
+  			recursion with no results         RecursiveAction	extends ForkJoinTask
+
+5. See ForkJoinPoolExecutorMalformedIdentityRepository (no recursion used because we just fire-and-forget)
+
+  		III. Blocking Queue
+  		- follow producer-consumer paradigm, using a queue as the intermediate data structure
+  		- abstracts away direct use of wait and notify, avoiding common pitfalls
+  		- has a full complement of produce and consume methods that 
+  			block, 			e.g. put()			take() 
+  			don't block,	e.g. offer()
+  			throw exceptions	 add()
+  		
+ 6. See ProducerMalformedIdentityRepository
+  

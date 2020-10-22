@@ -1,0 +1,54 @@
+======3. Sharing Processes between Parallel Workers=====
+
+===	Scatter-Gather Pattern
+	
+	Scatterer   ->   Gatherer
+		      Workers				The Result
+		      
+	- ask several independent workers their vote or opinion on the same question, 
+	  short circuiting when a quorum is reached
+	- segment work across several workers
+	- ask several workers to perform the same operation for reliability or performance
+	- workers operate in parallel
+
+1. See MultiStrategyReader
+2. See SingleThreadScatterGatherer
+
+===	Future
+	- an Object that represents the result that a Worker will eventually produce
+		Future<Identity> identityHolder = pool.submit(() -> reader.read(source));
+	- Allows the submitter to block on Workers' results
+		Identity identity = identityHolder.get();
+	- Futures can be returned to layers that are prepared to block on the response
+
+3. See ExecutorServiceScatterGatherer
+	
+===		ExecutorCompletionService
+			ExecutorCompletionService esc = new ExecutorCompletionService(pool);
+		- adds completed tasks to a queue from which results can be retrieved 
+		  in the order that they that they were completed 
+		- reduces real time execution
+
+4. See ExecutorCompletionServiceScatterGatherer
+
+===		Thread Safe Containers
+	NOT Thread Safe			Thread Safe
+	ArrayList				ConcurrentLinkedQueue, BlockingQueue
+	HashMap					ConcurrentHashMap
+	incrementation			AtomicInteger, LongAdder
+	
+	- compound statements are not atomic => they are not naturally thread safe
+	
+5. See ThreadSafeStatsLedger
+
+===		Reentrant Lock
+			Lock lock = new ReentrantLock();
+	- abstracts the monitor into an object, allowing
+	  acquisition and release patterns other than simple code blocks
+	  		lock.lock(); try { unsafe } finally { lock.unlock(); }
+	- allows for multiple conditions to be created from a single lock
+	  for more sophisticated patterns
+	- maintains the same atomicity and visibility semantics as synchronized
+	- may be faster than the synchronized keyword
+	  	 
+6 See and compare LockableStatsLedger and LockableStatsLedger2 	  			

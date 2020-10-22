@@ -1,0 +1,10 @@
+
+	Fire-and-Forget
+	Scatter-Gather
+	Countdown latch
+	Continuation-Passing
+	Pipeline
+	
+	Backpressure
+	Semaphore
+	Batching
